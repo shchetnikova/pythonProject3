@@ -1,47 +1,65 @@
-#1
 
 import http.client
 import json
-conn = http.client.HTTPConnection("167.172.172.227:8000")
-conn.request('GET', '/number/3',)
-r1 = conn.getresponse().read().decode()
-r1_json = json.loads(r1)
-print(r1_json['number'])
+def operate(data: str, left: int):
+    dict = json.loads(data)
+    if dict['operation'] == 'mul':
+        return left * dict['number']
+    if dict['operation'] == 'sub':
+        return left - dict['number']
+    if dict['operation'] == 'div':
+        return left / dict['number']
+    if dict['operation'] == 'sum':
+        return left + dict['number']
+
+#1
+
+connect = http.client.HTTPConnection("167.172.172.227:8000")
+connect.request ("GET", "/number/3")
+response1 = connect.getresponse()
+print(response1.status, response1.reason)
+decoded_body = response1.read().decode()
+left = json.loads(decoded_body)['number']
+print(left)
 
 #2
 
-conn.request('GET', '/number/?option=3',)
-r2 = conn.getresponse().read().decode()
-r2_json = json.loads(r2)
-print(r2)
-result = r1_json['number'] * r2_json['number']
-print(result)
+connect = http.client.HTTPConnection("167.172.172.227:8000")
+connect.request('GET', '/number/?option=3')
+response1 = connect.getresponse()
+print(response1.status, response1.reason)
+decoded_body = response1.read().decode()
+left = int(operate(decoded_body, left))
+print(left)
 
 #3
 
+connect = http.client.HTTPConnection("167.172.172.227:8000")
 headers = {'Content-type': 'application/x-www-form-urlencoded'}
-conn.request('POST', '/number/', 'option=3', headers)
-r3 = conn.getresponse().read().decode()
-r3_json = json.loads(r3)
-print(r3)
-result2 = r3_json['number'] - r2_json['number']
-print(result2)
+connect.request('POST', '/number/', 'option=3', headers)
+response1 = connect.getresponse()
+print(response1.status, response1.reason)
+decoded_body = response1.read().decode()
+left = int(operate(decoded_body, left))
+print(left)
 
 #4
 
+connect = http.client.HTTPConnection("167.172.172.227:8000")
 headers = {'Content-type': 'application/json'}
-conn.request('PUT', '/number/', '{"option":3}', headers)
-r4 = conn.getresponse().read().decode()
-r4_json = json.loads(r4)
-print(r4_json)
-result3 = r4_json['number']//r3_json['number']
-print(result3)
+connect.request('PUT', '/number/', json.dumps({'option': 3}), headers)
+response1 = connect.getresponse()
+print(response1.status, response1.reason)
+decoded_body = response1.read().decode()
+left = int(operate(decoded_body, left))
+print(left)
 
 #5
 
-conn.request('DELETE', '/number/', '{"option":3}',)
-r5 = conn.getresponse().read().decode()
-r5_json = json.loads(r5)
-print(r5_json)
-result4 = r5_json['number'] + r4_json['number']
-print(result4)
+connect = http.client.HTTPConnection("167.172.172.227:8000")
+connect.request('DELETE', '/number/', json.dumps({'option': 3}))
+response1 = connect.getresponse()
+print(response1.status, response1.reason)
+decoded_body = response1.read().decode()
+left = int(operate(decoded_body, left))
+print(left)
